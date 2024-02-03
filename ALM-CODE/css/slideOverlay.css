@@ -1,0 +1,28 @@
+﻿
+<style>
+.container {
+  position: relative;
+}
+
+.image {
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #008CBA;
+  overflow: hidden;
+  transition: .5s ease;
+}
+
+.container:hover .overlay {
+  height: 100%;
+  width:auto;
+}
+
+</style>
+
+
