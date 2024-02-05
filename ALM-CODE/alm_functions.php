@@ -1,6 +1,6 @@
 
 <?php 
-include $_SERVER['DOCUMENT_ROOT'] . '/mis/DBConnect.php';
+include 'DBConnect.php';
 
 $conn111 = $conn;//  new mysqli("10.88.1.222","root","","investments");
 // $conn=$con1;
