@@ -1,0 +1,30 @@
+CREATE DEFINER = 'root'@'localhost'
+PROCEDURE test.TEMP_INTRST_INSERT()
+PROC_LABEL:
+BEGIN
+
+    DECLARE I int;
+    DECLARE DONE int;
+
+    DECLARE CREFID varchar(10);
+
+    DECLARE INSERT_CURSOR CURSOR FOR
+     SELECT DISTINCT(rt.RefID) FROM refinance_test rt;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET DONE = 1;
+
+        -- CURSOR STARTS INSERTS OUTSTANDING
+        OPEN INSERT_CURSOR;
+    L1:
+        LOOP
+            FETCH INSERT_CURSOR INTO CREFID;
+            IF DONE = 1 THEN
+                LEAVE L1;
+            END IF;
+
+        CALL GENERATE_DATES(CREFID);
+
+        END LOOP L1;
+        CLOSE INSERT_CURSOR;
+
+END
