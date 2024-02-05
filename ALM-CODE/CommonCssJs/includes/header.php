@@ -17,7 +17,7 @@
               </div>
             <!--logo start-->
             <div class="top-menu" style="display: flex; justify-content: space-around; ">
-              <a><b><?php include $_SERVER['DOCUMENT_ROOT'] . '\mis\depNoCSS.php'; ?></b></a> 
+              <a><b><?php $pid=99999;// include $_SERVER['DOCUMENT_ROOT'] . '\mis\depNoCSS.php'; ?></b></a> 
               <a href="/mis/Departments/HeadOffice/ALM/" style="color: white"><h1>Asset and Liability Management (ALM)</h1></a>               
               <div style="float: right;display: flex;  ">             
                   <h5 class="centered"><?php echo "$EmpName ($pid)"; ?><br><?php echo "$branchname ($EmpBrcode)"; ?></h5>
@@ -27,7 +27,7 @@
                     <li><a class="logout" href="logout.php">Logout</a></li>
               </ul-->
             </div>
-              <?php include $_SERVER['DOCUMENT_ROOT'] . '\mis\phpFunctions.php'; ?> 
+              <?php //include $_SERVER['DOCUMENT_ROOT'] . '\mis\phpFunctions.php'; ?> 
               <?php include 'CommonCssJs\includes\number_to_text.php'; ?> 
 
        </header>
