@@ -1,0 +1,377 @@
+VB code for pre-processing - depd0580.prt & lond2390.prt:
+
+Private Sub Command15_Click()
+Dim fileIn As Integer
+Dim fileOut As Integer
+Dim fileOut1 As Integer
+
+Dim sLine As String
+Dim tmp As String
+Dim chk As String
+Dim bcode As String
+Dim tmp1 As String
+Dim Acc1 As String
+Dim Acc2 As String
+Dim line1, line2 As String
+Dim chk1 As String
+Dim bal As Double
+Dim s1, s2, s3, s4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14 As String
+Dim findKCC As String
+Dim flinecnt As Integer
+
+
+chkDigitFiles = 0
+flinecnt = 1
+
+fileOut = FreeFile
+Open "D:\MIS\MISDATA\Deposit" & THIS_DATE & ".txt" For Output As #fileOut
+Close #fileOut
+
+fileOut1 = FreeFile
+Open "D:\MIS\MISDATA\KCC" & THIS_DATE & ".txt" For Output As #fileOut1
+Close #fileOut1
+
+
+
+fileIn = FreeFile
+'MsgBox ("1")
+Open "D:\MIS\COPY2\depd0580.prt" For Input As #fileIn
+' fileOut = FreeFile
+' MsgBox ("2")
+' Open "C:\Documents and Settings\Administrator\Desktop\SamplePlain.txt" For Append As #fileOut
+
+Do While Not EOF(fileIn)
+Line Input #fileIn, tmp
+chk = Mid(tmp, 1, 6)
+
+ tmpInt1 = InStr(tmp, "RUN DATE:")
+ tmpInt2 = InStr(tmp, "PROC DATE:")
+ If tmpInt1 > 0 And chkDigitFiles = 0 Then
+  FileRunDate = Trim(Mid(tmp, tmpInt1, 30))
+  chkDigitFiles = chkDigitFiles + 1
+  tmpInt3 = tmpInt1
+ End If
+ If tmpInt2 > 0 And chkDigitFiles = 1 Then
+  FileProcessDate = Trim(Mid(tmp, tmpInt2, 30))
+  chkDigitFiles = chkDigitFiles + 1
+  tmpInt4 = tmpInt2
+ End If
+ If chkDigitFiles = 2 And tmpInt3 > 0 And tmpInt4 > 0 Then
+  fileOutDates = FreeFile
+  Open "D:\MIS\ProcessedFilesDates-Phase2.txt" For Append As #fileOutDates
+   Print #fileOutDates, "DEPD0580     " & THIS_DATE & " | " & FileRunDate & " | " & FileProcessDate
+  Close #fileOutDates
+  PrFilesDates = PrFilesDates & vbNewLine & "DEPD0580     " & THIS_DATE & " | " & FileRunDate & " | " & FileProcessDate
+
+  chkDigitFiles = 1
+End If
+
+
+If chk = "BRANCH" Then
+bcode = Mid(tmp, 9, 5)
+
+Do While Not EOF(fileIn)
+Line Input #fileIn, tmp1
+Acc1 = Mid(tmp1, 9, 1)
+Acc2 = Mid(tmp1, 10, 1)
+chk1 = Mid(tmp1, 1, 6)
+If chk1 = "BRANCH" Then
+bcode = Mid(tmp1, 9, 5)
+End If
+If Acc1 = "7" Or Acc2 = "7" Then
+s1 = Trim(Mid(tmp1, 1, 20))
+s1 = Replace(s1, "-", "")
+s2 = Trim(Mid(tmp1, 23, 18))
+s3 = Trim(Mid(tmp1, 51, 34))
+s3 = Replace(s3, "/", "")
+s3 = Replace(s3, "\", "")
+s3 = Replace(s3, "&", "")
+s3 = Replace(s3, "%", "")
+s3 = Replace(s3, "$", "")
+s3 = Replace(s3, ".", "")
+s4 = Trim(Mid(tmp1, 85, 5))
+S5 = Trim(Mid(tmp1, 90, 25))
+'S6 = Trim(Mid(tmp1, 116, 21))
+'S7 = Trim(Mid(tmp1, 138, 20))
+'S8 = Trim(Mid(tmp1, 159, 20))
+S9 = Trim(Mid(tmp1, 179, 23))
+S10 = Trim(Mid(tmp1, 202, 7))
+S11 = Trim(Mid(tmp1, 209, 10))
+S12 = Trim(Mid(tmp1, 219, 24))
+If (Mid(S12, Len(S12), Len(S12) - 1) = "-") Then
+ s15 = "DR"
+ S12 = Mid(S12, 1, Len(S12) - 1)
+Else
+ s15 = "CR"
+End If
+bal = FormatNumber(S12, 2)
+S12 = bal
+S13 = Trim(Mid(tmp1, 243, 10))
+SANCDAY = Trim(Mid(S13, 1, 2))
+SANCMONTH = Trim(Mid(S13, 4, 2))
+SANCYEAR = Trim(Mid(S13, 7, 4))
+S13 = SANCYEAR & "-" & SANCMONTH & "-" & SANCDAY
+
+'S14 = Trim(Mid(tmp1, 247, 10))
+
+line1 = RUN_DATE + "$" + bcode + "$" + s1 + "$" + s2 + "$" + s3 + "$" + s4 + "$" + S5 + "$" + S9 + "$" + S10 + "$" + S11 + "$"
+line2 = "$" + "1" + "$" + S13 + "$" + "CCOD" + "$" + s15
+
+' MsgBox ("Success")
+fileOut1 = FreeFile
+If Val(S11) >= 4 Then
+ Text2.Text = Val(Text2.Text) + Val(S12)
+End If
+
+If Val(S10) >= 4 And Val(S11) < 4 Then
+ Text3.Text = Val(Text3.Text) + Val(S12)
+End If
+
+If Val(S10) = 1 Then
+ Text4.Text = Val(Text4.Text) + Val(S12)
+End If
+
+If Val(S10) = 2 Then
+ Text5.Text = Val(Text5.Text) + Val(S12)
+End If
+
+s16 = Trim(Mid(tmp1, 254, 10))
+s17 = Trim(Mid(tmp1, 264, 22))
+s18 = Trim(Mid(tmp1, 292, 12))
+s19 = Trim(Mid(tmp1, 305, 9))
+s20 = Trim(Mid(tmp1, 315, 18))
+s21 = Trim(Mid(tmp1, 333, 11))
+s22 = Trim(Mid(tmp1, 344, 18))
+s23 = Trim(Mid(tmp1, 362, 11))
+s24 = Trim(Mid(tmp1, 376, 5))
+s25 = Trim(Mid(tmp1, 383, 5))
+s26 = Trim(Mid(tmp1, 390, 10))
+
+
+RUN_DATE = Trim(Mid(FileRunDate, 11, 10))
+line1 = RUN_DATE + "$$" + bcode + "$$" + s1 + "$$" + s2 + "$$" + s3 + "$$" + s4 + "$$" + S5 + "$$" + S9 + "$$" + S10 + "$$" + S11 + "$$"
+line2 = "$$" + S13 + "$$" + "CCOD" + "$$" + s15 + "$$" + s16 + "$$" + s17 + "$$" + s18 + "$$" + s19 + "$$" + s20 + "$$" + s21 + "$$" + s22 + "$$" + s23 + "$$" + s24 + "$$" + s25 + "$$" + s26
+
+fileOut = FreeFile
+Open "D:\MIS\MISDATA\Deposit" & THIS_DATE & ".txt" For Append As #fileOut
+Print #fileOut, (line1 & S12 & line2)
+Close #fileOut
+
+
+
+End If
+
+Loop
+
+End If
+
+Loop
+
+
+End Sub
+
+-------------------------------------------------------
+Private Sub Command14_Click()
+Dim fileIn As Integer
+Dim fileOut As Integer
+Dim fileOut1 As Integer
+Dim sLine As String
+Dim tmp As String
+Dim chk As String
+Dim bcode As String
+Dim tmp1 As String
+Dim Acc1 As String
+Dim line1, line2 As String
+Dim chk1 As String
+Dim bal As Double
+Dim s1, s2, s3, S9, S10, S11, S12, S13, S14, s15, s16 As String
+Dim s4, S5, S6, S7, S8  As Double
+
+chkDigitFiles = 0
+
+fileOut = FreeFile
+Open "D:\MIS\MISDATA\Lond" & THIS_DATE & ".txt" For Output As #fileOut
+Close #fileOut
+
+fileIn = FreeFile
+'MsgBox ("1")
+Open "D:\MIS\COPY2\lond2390.prt" For Input As #fileIn
+
+Do While Not EOF(fileIn)
+Line Input #fileIn, tmp
+chk = Mid(tmp, 1, 6)
+
+ tmpInt1 = InStr(tmp, "RUN DATE:")
+ tmpInt2 = InStr(tmp, "PROC DATE:")
+ If tmpInt1 > 0 And chkDigitFiles = 0 Then
+  FileRunDate = Trim(Mid(tmp, tmpInt1, 30))
+  chkDigitFiles = chkDigitFiles + 1
+  tmpInt3 = tmpInt1
+ End If
+ If tmpInt2 > 0 And chkDigitFiles = 1 Then
+  FileProcessDate = Trim(Mid(tmp, tmpInt2, 30))
+  chkDigitFiles = chkDigitFiles + 1
+  tmpInt4 = tmpInt2
+ End If
+ If chkDigitFiles = 2 And tmpInt3 > 0 And tmpInt4 > 0 Then
+  fileOutDates = FreeFile
+  Open "D:\MIS\ProcessedFilesDates-Phase2.txt" For Append As #fileOutDates
+   Print #fileOutDates, "LOND2390     " & THIS_DATE & " | " & FileRunDate & " | " & FileProcessDate
+  Close #fileOutDates
+    PrFilesDates = PrFilesDates & vbNewLine & "LOND2390     " & THIS_DATE & " | " & FileRunDate & " | " & FileProcessDate
+
+  chkDigitFiles = 1
+End If
+If chk = "BRANCH" Then
+bcode = Mid(tmp, 9, 5)
+
+Do While Not EOF(fileIn)
+Line Input #fileIn, tmp1
+Acc1 = Mid(tmp1, 7, 1)
+Acc2 = Mid(tmp1, 8, 1)
+chk1 = Mid(tmp1, 1, 6)
+If chk1 = "BRANCH" Then
+bcode = Mid(tmp1, 9, 5)
+End If
+If Acc1 = "7" Or Acc2 = "7" Then
+s1 = Trim(Mid(tmp1, 1, 17)) ' AccNo
+s2 = Trim(Mid(tmp1, 47, 26)) 'AccType
+s3 = Trim(Mid(tmp1, 74, 30)) 'CustName
+
+s3 = Replace(s3, "/", " ")
+s3 = Replace(s3, "\", " ")
+
+s4 = Trim(Mid(tmp1, 105, 23)) ' Limit
+S5 = Trim(Mid(tmp1, 128, 9)) 'IRate
+'S6 = Trim(Mid(tmp1, 116, 18)) 'TheoBal
+S7 = Trim(Mid(tmp1, 160, 25)) 'Bal
+If (Mid(S7, Len(S7), Len(S7) - 1) = "-") Then
+ S7 = Mid(S7, 1, Len(S7) - 1)
+End If
+bal = FormatNumber(S7, 2)
+S7 = bal
+S8 = Trim(Mid(tmp1, 184, 24)) 'Irreg
+S9 = Trim(Mid(tmp1, 209, 11)) 'SanDt
+SANCDAY = Trim(Mid(S9, 1, 2))
+SANCMONTH = Trim(Mid(S9, 4, 2))
+SANCYEAR = Trim(Mid(S9, 7, 4))
+S9 = SANCYEAR & "-" & SANCMONTH & "-" & SANCDAY
+
+S10 = Trim(Mid(tmp1, 19, 18)) 'CIF
+S11 = Trim(Mid(tmp1, 38, 8)) 'ProdCode
+S12 = Trim(Mid(tmp1, 251, 15)) 'MobileNo
+
+
+S13 = Trim(Mid(tmp1, 244, 2)) 'IracNew
+S14 = Trim(Mid(tmp1, 249, 2)) 'IracOld
+
+'line1 = RUN_DATE & "$" & bcode & "$" & s1 & "$" & s2 & "$" & s3 & "$" & S5 & "$" & s4 & "$" & S8 & "$" & S13 & "$" & S14 & "$" & S7 & "$" & "1" & "$" & S9 & "$" & "TLDL" & "$$" & "DR"
+
+fileOut1 = FreeFile
+ 
+If Val(S14) >= 4 Then
+ Text2.Text = Val(Text2.Text) + Val(S7)
+End If
+
+If Val(S13) >= 4 And Val(S14) < 4 Then
+ Text3.Text = Val(Text3.Text) + Val(S7)
+End If
+
+If Val(S13) = 1 Then
+ Text4.Text = Val(Text4.Text) + Val(S7)
+End If
+
+If Val(S13) = 2 Then
+ Text5.Text = Val(Text5.Text) + Val(S7)
+End If
+
+RUN_DATE = Trim(Mid(FileRunDate, 11, 10))
+
+  line1 = RUN_DATE & "$$" & bcode & "$$" & s1 & "$$" & s2 & "$$" & s3 & "$$" & S5 & "$$" & s4 & "$$" & S8 & "$$" & S13 & "$$" & S14 & "$$" & S7 & "$$" & S9 & "$$" & "TLDL" & "$$" & "DR" & "$$ $$ $$" & S10 & "$$" & S11 & "$$ $$" & S12 & "$$ $$ $$ $$ $$ "
+  fileOut = FreeFile
+  Open "D:\MIS\MISDATA\Lond" & THIS_DATE & ".txt" For Append As #fileOut
+  Print #fileOut, line1
+  Close #fileOut
+
+
+End If
+ 
+
+ Loop
+
+End If
+
+Loop
+
+
+
+End Sub
+
+-----------------------------------------------------------------------
+
+VB code for pre-processing - TRIAL_BALANCE_REPORT.prt:
+
+
+Private Sub Command5_Click()
+Dim fileIn, filein2 As Integer
+Dim fileOut, fileOut1 As Integer
+Dim tmp, tmp2, tmp1, tmp3 As String
+Dim FLG, FLG1, FLG3 As Integer
+Dim SunAccNo, ChkTot As String
+Dim GLAccNo, TmpGLAccNo, AccNo, TmpAccNo, AccName, s1, TmpEntity, SuStr, s2, s3, s4 As String
+Dim line1, line2 As String
+Dim bcode As String
+Dim chk As String
+Dim AmtS1 As Double
+Dim OpBal, ClBal As Double
+
+
+chkDigitFiles = 0
+
+fileOut = FreeFile
+Open "D:\MIS\MISDATA\Trial" & THIS_DATE & ".txt" For Output As #fileOut
+Close #fileOut
+
+fileOut = FreeFile
+Open "D:\MIS\MISDATA\DailyWeekly" & THIS_DATE & ".txt" For Output As #fileOut
+Close #fileOut
+
+fileIn = FreeFile
+FLG = 0
+Open "D:\MIS\COPY1\TRIAL_BALANCE_REPORT.prt" For Input As #fileIn
+Do While Not EOF(fileIn)
+   Line Input #fileIn, tmp
+   TmpEntity = Trim(Mid(tmp, 41, 6))
+   If (TmpEntity = "ENTITY") Then
+    bcode = Trim(Mid(tmp, 51, 5))
+   End If
+   TmpGLAccNo = Trim(Mid(tmp, 1, 11))
+   If (TmpGLAccNo = "GL ACCOUNT:") Then
+    AccNo = Trim(Mid(tmp, 13, 10))
+    AccName = Trim(Mid(tmp, 25, 35))
+    FLG = 1
+   End If
+   ChkTot = Trim(Mid(tmp, 1, 11))
+   If (ChkTot = "** TOTAL **" And FLG = 1) Then
+    TmpAccNo = Trim(Mid(tmp, 13, 10))
+    If (TmpAccNo = AccNo) Then
+                        s1 = Trim(Mid(tmp, 111, 17))
+                        OpBal = Trim(Mid(tmp, 64, 26))
+                        ClBal = Trim(Mid(tmp, 91, 19))
+                        If (Right(s1, 1) = "-") Then
+                         s1 = -Trim(Mid(s1, 1, Len(s1) - 1))
+                        Else
+                         s1 = s1
+                        End If
+
+                        
+                        line2 = RUN_DATE & "$$" & bcode & "$$" & AccNo & "$$" & AccName & "$$" & s1 & "$$" & OpBal & "$$" & ClBal  '& vbTab & s2 & vbTab & s3 & vbTab & s4
+                        fileOut1 = FreeFile
+                        Open "D:\MIS\MISDATA\DAILYWEEKLY" & THIS_DATE & ".txt" For Append As #fileOut1
+                           Print #fileOut1, line2
+                        Close #fileOut1
+    End If
+   End If
+Loop
+Command5.Enabled = False
+End Sub
